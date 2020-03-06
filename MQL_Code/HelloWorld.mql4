@@ -1,0 +1,61 @@
+//+------------------------------------------------------------------+
+//|                                                    OrderSend.mq4 |
+//|                               Copyright 2016-2020, TerenceLiu98. |
+//|                                   https://terenceliu98.github.io |
+//+------------------------------------------------------------------+
+
+//+------------------------------------------------------------------+
+//|           First Partition                                        |
+//+------------------------------------------------------------------+
+
+// In this partition, you can declare some global vairable
+
+extern int Price = 0;
+extern int magic_number = 0; // set it if you'll use closing option 3 - closing by magic number
+extern string comment_text = ""; // set it if you'll use closing option 4 - closing by comment
+
+//+------------------------------------------------------------------+
+//|           Initial Part                                           |
+//+------------------------------------------------------------------+
+
+// In this partition, it is mainly for the EA to initialize itself
+// Once it finish the initiation, the output would not change, therefore, do not set variable in here
+int init()
+    {
+        Alert("Symbol name of the current chart = ", _Symbol);
+        Alert("Time frame of the current chart=", _Period);
+        Alert("The latest knwon seller's price (ask price) for the current symbol=", Ask);
+        Alert("The latest known buyer's price （bid price) bid price) of the current symbol =", Bid);
+        Print("Number of decimal places=",Digits);
+        Print("Number of decimal places=",_Digits);
+        Print("Size of the current symbol point in the quote currency=",_Point); Print("Size of the current symbol point in the quote currency=",Point); Print("Number of bars in the current chart=",Bars);
+        Print("Open price of the current bar of the current chart=",Open[0]); Print("Close price of the current bar of the current chart=",Close[0]); Print("High price of the current bar of the current chart=",High[0]); Print("Low price of the current bar of the current chart=",Low[0]); Print("Time of the current bar of the current chart=",Time[0]); Print("Tick volume of the current bar of the current chart=",Volume[0]); Print("Last error code=",_LastError);
+        Print("Random seed=",_RandomSeed);
+        Print("Stop flag=",_StopFlag);
+        Print("Uninitialization reason code=",_UninitReason);
+        Alert("This EA is only Ordersend automatically");
+        return 0;
+    }
+
+//+------------------------------------------------------------------+
+//|      remove EA                                                   |
+//+------------------------------------------------------------------+
+
+// The main function of this partition is to remove the EA;
+
+int deinit()
+    {
+        return 0;
+    }
+
+// To Start the program
+
+int OnTick() // int OnTimer()
+    {
+        return 0;
+    }
+
+//The difference between OnTick & On Timer is:
+// * OnTick means every time the price moves, it run the program once;
+// * OnTick means it would run the program follow the time you set
+
