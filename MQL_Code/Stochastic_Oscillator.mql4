@@ -1,0 +1,109 @@
+//+------------------------------------------------------------------+
+//|                                                           KD.mq4 |
+//|                                                       TerenceLau |
+//|                                   https://terenceliu98.github.io |
+//+------------------------------------------------------------------+
+#property copyright "TerenceLau"
+#property link      "https://terenceliu98.github.io"
+#property version   "1.00"
+#property strict
+
+
+//string Currency_Name;
+extern double Lot;
+extern double max_order = 50;
+extern double takeloss, takeprofit;
+extern int MAGIC = 100;
+extern int ticket;
+extern bool Alerm=false;
+
+//+------------------------------------------------------------------+
+//| Expert initialization function                                   |
+//+------------------------------------------------------------------+
+int OnInit()
+  {
+  
+     return(INIT_SUCCEEDED);
+  }
+  
+//+------------------------------------------------------------------+
+//| Expert deinitialization function                                 |
+//+------------------------------------------------------------------+
+void OnDeinit(const int reason)
+  {
+//---
+  }
+//--- AUTO BUY FUNCTION
+void AutoOrder_Buy()
+  {
+   double minstoplevel=MarketInfo(Symbol(),MODE_STOPLEVEL);
+   double stoploss = NormalizeDouble(Ask-minstoplevel*Point,Digits);
+   double takeprofit = NormalizeDouble(Ask+minstoplevel*Point,Digits);
+   //Print("Ask Price: ", Ask); // print Ask Price
+   //Print("Bid Price: ", Bid); // print Bid Price
+   
+   //stop_loss   = Ask - 100*Point; // stop loss
+   //take_profit = Ask + 100*Point; // take profit
+   //Print("stop_losst:",stop_loss);
+   //Print("take_profit:",take_profit);
+   int ticket = OrderSend(Symbol(),OP_BUYLIMIT,Lot, Ask,0,stoploss ,takeprofit);
+   if(ticket<0)
+     {
+      Print("OrderSend failed with error #",GetLastError());
+     }
+   else
+      Print("OrderSend placed successfully");
+  }
+
+//-- AUTO SELL FUNCTION
+void AutoOrder_Sell()
+  {
+   double minstoplevel=MarketInfo(Symbol(),MODE_STOPLEVEL);
+   double stoploss = NormalizeDouble(Ask-minstoplevel*Point,Digits);
+   double takeprofit = NormalizeDouble(Ask+minstoplevel*Point,Digits);
+   //Print("Ask Price: ", Ask); // print Ask Price
+   //Print("Bid Price: ", Bid); // print Bid Price
+   
+   //stop_loss   = Ask - 100*Point; // stop loss
+   //take_profit = Ask + 100*Point; // take profit
+   
+   //Print("stop_losst:",stop_loss);
+   //Print("take_profit:",take_profit);
+   int ticket = OrderSend(Symbol(),OP_SELLLIMIT,Lot, Bid,0,stoploss ,takeprofit);
+   if(ticket<0)
+     {
+      Print("OrderSend failed with error #",GetLastError());
+     }
+   else
+      Print("OrderSend placed successfully");
+  }
+ 
+ //-- AUTO CLOSE-ALL FUNCTION
+//---
+
+//+------------------------------------------------------------------+
+//| Expert tick function                                             |
+//+------------------------------------------------------------------+
+void OnTick()
+  {
+   int res = -1;
+   double m=0.0,m1=0.0,s=0.0,s1=0.0;
+   m  =iStochastic(NULL,0,5,3,3,MODE_SMA,0,MODE_MAIN,0);
+   m1 =iStochastic(NULL,0,5,3,3,MODE_SMA,0,MODE_MAIN,1);    
+    
+   s  =iStochastic(NULL,0,5,3,3,MODE_SMA,0,MODE_SIGNAL,0);
+   s1 =iStochastic(NULL,0,5,3,3,MODE_SMA,0,MODE_SIGNAL,1);
+//--- KD Trading
+      //-- under 20% line && formed golden cross
+      if(m<20.0 && m>s&&m1<=s1) 
+      {
+         AutoOrder_Buy();
+      }
+      //-- beyond 80% line && formed golden cross
+      else if(m > 80.0 && m < s && m1 >= s1)
+      {
+         AutoOrder_Sell();
+      }
+    
+  }
+//+------------------------------------------------------------------+
